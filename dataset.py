@@ -30,7 +30,7 @@ def GET(url: str):
         url,
         headers={
             "Accept": "application/json",
-            "User-Agent": "GTE-scraper-bot (haley@program.mr)",
+            "User-Agent": "QQQ-Position-Scraper",
             "X-Apology": "sorry for spamming your api :( i'll try to keep it to a minimum",
         },
     )
@@ -129,14 +129,6 @@ def generate_dataset(
         num_games = len(games)
         log(f"generate_dataset: loaded {num_games} games from cache")
     else:
-        # games = []
-        # for archive in tqdm.tqdm(
-        #     game_archives,
-        #     desc="fetching games",
-        #     unit="archive",
-        # ):
-        #     games.extend(get_games_from_archive(archive, limit, num_games))
-
         num_games = 0
         game_limit = game_limit_per_user * user_limit
         games = []
