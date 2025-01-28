@@ -72,6 +72,8 @@ class ChessModel(nn.Module):
         return self.layers(x)
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 dataset = ChessDataset("bigdata.csv")
 train_size = int(0.8 * len(dataset))
 test_size = len(dataset) - train_size
@@ -82,12 +84,12 @@ train_dataset, test_dataset = torch.utils.data.random_split(
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-model = ChessModel()
+model = ChessModel().to(device)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 writer = SummaryWriter()
 
-sample_data = next(iter(train_loader))[0]
+sample_data = next(iter(train_loader))[0].to(device)
 writer.add_graph(model, sample_data)
 
 try:
@@ -96,6 +98,7 @@ try:
         model.train()
         for i, batch in enumerate(train_loader):
             positions, scores = batch
+            positions, scores = positions.to(device), scores.to(device)
             optimizer.zero_grad()
             outputs = model(positions)
             outputs = outputs.squeeze()
@@ -123,6 +126,7 @@ try:
             validation_loss = 0.0
             for j, batch in enumerate(test_loader):
                 positions, scores = batch
+                positions, scores = positions.to(device), scores.to(device)
                 outputs = model(positions)
                 outputs = outputs.squeeze()
                 test_loss = criterion(outputs, scores)
